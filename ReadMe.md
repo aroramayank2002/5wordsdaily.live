@@ -1,10 +1,10 @@
 # 5 Words Daily
 
 A small application to save new swedish words daily
-```
-[a link](https://5wordsdaily.live)
 
-```
+[a link](https://www.5wordsdaily.live)
+
+
 
 ## Getting Started
 
