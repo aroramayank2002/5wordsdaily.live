@@ -2,7 +2,7 @@
 
 A small application to save new swedish words daily
 
-[a link](https://www.5wordsdaily.live)
+[Live url](https://www.5wordsdaily.live)
 
 
 
