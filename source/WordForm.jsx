@@ -179,7 +179,7 @@ export class WordForm extends React.Component {
     handleChange = (e) => {
         // console.log("Text:"+ e.target.value);
         // console.log("Text:"+ e.target.name);
-        let val = e.target.value;
+        let val = e.target.value.trim();
         (e.target.name == "word") ? this.setState(prevState => {
             if (val.length >= 3) {
                 if (prevState.word != val) {

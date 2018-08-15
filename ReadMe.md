@@ -1,20 +1,59 @@
-Build on React With Postgres
+# 5 Words Daily
 
-Focus on smoothening dev and production process.
+A small application to save new swedish words daily
 
-In dev: index.html and bundle.js is taken from root of the project, and different client id is used for google login, different db
-In prod: index.html and bundle.js is taken from static folder of the project, and different client id is used for google login
+## Getting Started
 
-npm run build
-eb deploy Helloworld02-env
+This project has dependencies on having a postgress schema.
+The schema scripts are not part of this project and might get added in future. (distant ;) )
 
-e:\212_swedishLearnFiveWords\workspace\HelloWorld02>set PORT=3000 
-e:\212_swedishLearnFiveWords\workspace\HelloWorld02>npm run start 
-This will start express with set port.
+## About
 
-Word count for a user today: 
-    SELECT COUNT(m.WORD) FROM public.meaning m, public.user u where u.id=m.user_id and u.email='aroramayank2002@gmail.com' and m.date='2018-08-06'
-    SELECT COUNT(m.WORD) FROM public.meaning m, public.user u where u.id=m.user_id and u.email='sonia.miglani33@gmail.com' and m.date='2018-08-06'
+Technology stack used:
 
-Server side validation of google apis
-    https://developers.google.com/identity/sign-in/web/backend-auth
+React for front end development
+Express for REST apis and database interaction
+Postgress for Database
+Google + Facebook for Authentication
+
+Domain Name from Godaddy
+Client certificate ( AWS free tier )
+Elastic load balancer ( AWS free tier )
+Server instance on elestic beanstalk ( AWS free tier )
+RDS ( AWS free tier )
+Route 53 ( AWS free tier )
+
+## Usage
+
+The following commands are mostly used:
+
+### Development
+
+```
+npm run main   (Launches the webpack development server)
+npm run start  (Launches the express based rest api server to handle database interaction)
+```
+
+### Production deployment
+
+Prerequisite to have eb ( aws elesticbean cli) installed and configured/
+
+```
+npm run build               (Build the project for production deployment)
+eb deploy Helloworld02-env  (Deploys the project to AWS elesticbeanstalk)
+```
+
+## Authors
+
+* **Mayank Arora** - *Initial work* - [aroramayank2002](https://github.com/aroramayank2002)
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+Training guides by AWS.
+Postgress development guides.
+React development guides.
