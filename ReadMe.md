@@ -10,7 +10,7 @@ The schema scripts are not part of this project and might get added in future. (
 ## About
 
 Technology stack used:
-
+```
 React for front end development
 Express for REST apis and database interaction
 Postgress for Database
@@ -22,7 +22,7 @@ Elastic load balancer ( AWS free tier )
 Server instance on elestic beanstalk ( AWS free tier )
 RDS ( AWS free tier )
 Route 53 ( AWS free tier )
-
+```
 ## Usage
 
 The following commands are mostly used:
@@ -47,13 +47,10 @@ eb deploy Helloworld02-env  (Deploys the project to AWS elesticbeanstalk)
 
 * **Mayank Arora** - *Initial work* - [aroramayank2002](https://github.com/aroramayank2002)
 
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
 ## Acknowledgments
 
+```
 Training guides by AWS.
 Postgress development guides.
 React development guides.
+```
