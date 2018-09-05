@@ -44,7 +44,7 @@ Prerequisite to have eb ( aws elesticbean cli) installed and configured/
 
 ```
 npm run build               (Build the project for production deployment)
-eb deploy Helloworld02-env  (Deploys the project to AWS elesticbeanstalk)
+eb deploy Helloworld02-env-1  (Deploys the project to AWS elesticbeanstalk)
 ```
 
 ## Authors
@@ -57,4 +57,9 @@ eb deploy Helloworld02-env  (Deploys the project to AWS elesticbeanstalk)
 Training guides by AWS.
 Postgress development guides.
 React development guides.
+```
+## Userful eb commands:
+```
+eb status Helloworld02-env
+eb upgrade Helloworld02-env
 ```

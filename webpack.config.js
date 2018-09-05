@@ -27,7 +27,7 @@ module.exports = {
         // host : '192.168.1.31', //Google key is generated for localhost, so this won't work unless a new key is generated
         host : 'localhost', 
         proxy: {
-            '/api': 'http://localhost:8080'
+            '/api': 'http://localhost:8081'
           }
     },
     

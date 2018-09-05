@@ -38,7 +38,7 @@ class Header extends React.Component {
     // console.log(className);
     className = className.split(" ")[1].split("-")[1];
     // event.target.className glyphicon glyphicon-home
-    console.log(className);
+    // console.log(`className : ${className}`);
     this.props.currentPage(className);
   }
 
@@ -83,7 +83,7 @@ var divStyle = {
 
 export class Main extends React.Component {
   state = {
-    sessionId: null,
+    sessionId: 'ao44tt9pj-2018-09-05T09:20:55.702Z',
     page: "login",
   }
 
@@ -117,6 +117,11 @@ export class Main extends React.Component {
     
    }
 
+   navigateTo = (id) => {
+      console.log(`Main.jsx event: ${id}`);
+      this.page(id);
+   }
+
   render (){
     if(this.state.sessionId){
       if(this.state.page === "home"){
@@ -126,7 +131,7 @@ export class Main extends React.Component {
           </div>
             <Header currentPage={this.page}/> 
             <div style={divStyle}>
-            <Home sessionId={this.state.sessionId}/>  
+            <Home sessionId={this.state.sessionId} navigateTo={this.navigateTo}/>  
             {/* <Calanader /> */}
             </div>
           </div>
@@ -209,7 +214,7 @@ export class Main extends React.Component {
               {/* <Quiz sessionId={this.state.sessionId} /> */}
               {/* <Calanader sessionId={this.state.sessionId}/> */}
               {/* <WordForm sessionId={this.state.sessionId}/>  */}
-              <Home sessionId={this.state.sessionId}/>  
+              <Home sessionId={this.state.sessionId} navigateTo={this.navigateTo}/>  
               
               </div>
             </div>

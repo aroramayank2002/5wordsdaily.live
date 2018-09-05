@@ -20,7 +20,7 @@ var connectionString_local = {
 
   var connectionString_aws2 = {
     user: process.env.RDS_USERNAME || 'adminadmin',
-    host: process.env.RDS_HOSTNAME || 'aaxkwgte6brmp.cjwh4o87vc70.us-west-2.rds.amazonaws.com',
+    host: process.env.RDS_HOSTNAME || 'myrestoreddb.cjwh4o87vc70.us-west-2.rds.amazonaws.com',
     database: 'ebdb',
     password: process.env.RDS_PASSWORD || '12345678',
     port: process.env.RDS_PORT || 5432,

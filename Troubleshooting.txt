@@ -1,0 +1,178 @@
+Trying to connect to instance with ssh:
+    Attempt 1:
+        Instance name: mayank.us-west-2.elasticbeanstalk.com
+        Check if listening on port 22:
+                    telnet mayank.us-west-2.elasticbeanstalk.com 22
+                    Telnet was disabled so had to enable it from
+                        Program and Features > Turn windows featues on / off > Telnet client ( enable )
+                    
+                        Connecting with openSSH.
+
+        Go to console and get the DNS name for instance:
+            https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#Home:
+        
+            Host: ec2-54-244-135-103.us-west-2.compute.amazonaws.com  (this will be in description of instance)
+            IP: 54.244.135.103
+            Follow the steps:
+            User: ec2_user
+            Failed to connect troubleshooting/puttyConnectionIssue.PNG
+    Attempt 2
+        Creating the key again, this terminates and recreated the environment.
+        eb ssh --setup Helloworld02-env --region us-west-2
+
+        Took 2-3 minutes, Once done
+
+        eb ssh Helloworld02-env --region us-west-2
+
+            E:\tools\cygwin64\bin>eb ssh Helloworld02-env --region us-west-2
+            INFO: Attempting to open port 22.
+            INFO: SSH port 22 open.
+            INFO: Running ssh -i C:\Users\mayank1568\.ssh\aws-eb ec2-user@54.244.135.103
+            The authenticity of host '54.244.135.103 (54.244.135.103)' can't be established.
+            ECDSA key fingerprint is SHA256:s45K7tMLytCOG4Mimw2sNyL3dFxPKUpuig9lbFhHLPE.
+            Are you sure you want to continue connecting (yes/no)? yes
+            Warning: Permanently added '54.244.135.103' (ECDSA) to the list of known hosts.
+            _____ _           _   _      ____                       _        _ _
+            | ____| | __ _ ___| |_(_) ___| __ )  ___  __ _ _ __  ___| |_ __ _| | | __
+            |  _| | |/ _` / __| __| |/ __|  _ \ / _ \/ _` | '_ \/ __| __/ _` | | |/ /
+            | |___| | (_| \__ \ |_| | (__| |_) |  __/ (_| | | | \__ \ || (_| | |   <
+            |_____|_|\__,_|___/\__|_|\___|____/ \___|\__,_|_| |_|___/\__\__,_|_|_|\_\
+                                                Amazon Linux AMI
+
+            This EC2 instance is managed by AWS Elastic Beanstalk. Changes made via SSH
+            WILL BE LOST if the instance is replaced by auto-scaling. For more information
+            on customizing your Elastic Beanstalk environment, see our documentation here:
+            http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html
+
+            [ec2-user@ip-172-31-38-39 ~]$
+
+        Successful login
+
+Important paths on instance:
+    Logs:                   cd /var/log
+    Currency application:   ls var/app/current/
+
+    Command to start: /opt/elasticbeanstalk/node-install/node-v6.14.3-linux-x64/bin/node" "/opt/elasticbeanstalk/node-install/node-v6.14.3-linux-x64/bin/npm" "start"
+
+    npm install
+    /opt/elasticbeanstalk/node-install/node-v6.14.3-linux-x64/bin/node /opt/elasticbeanstalk/node-install/node-v6.14.3-linux-x64/bin/npm install
+
+    node_modules folder is empty and package-lock.json is very big
+    [ec2-user@ip-172-31-38-39 current]$ ll
+        total 312
+        -rw-r--r-- 1 nodejs nodejs    887 Aug 15 12:45 index.html
+        drwxr-xr-x 2 nodejs nodejs   4096 Aug 22 07:55 node_modules
+        -rw-r--r-- 1 nodejs nodejs   3129 Aug 22 07:56 npm-debug.log
+        -rw-r--r-- 1 nodejs nodejs   1212 Aug 15 12:45 package.json
+        -rw-r--r-- 1 nodejs nodejs 281221 Aug 15 12:45 package-lock.json
+        -rw-r--r-- 1 nodejs nodejs   1429 Aug 15 12:45 ReadMe.md
+        drwxr-xr-x 3 nodejs nodejs   4096 Aug 15 12:45 rest
+        drwxr-xr-x 3 nodejs nodejs   4096 Aug 15 12:45 source
+        drwxr-xr-x 3 nodejs nodejs   4096 Aug 15 12:45 static
+        -rw-r--r-- 1 nodejs nodejs   1135 Aug 15 12:45 webpack.config.js
+        [ec2-user@ip-172-31-38-39 current]$ ls node_modules/
+        [ec2-user@ip-172-31-38-39 current]$ cd node_modules/
+
+    Removed package-lock.json and restarted env from management console.
+    Didn't help
+
+    Attempt 2
+        Change to root and execute "npm install"
+        sudo su
+        /opt/elasticbeanstalk/node-install/node-v6.14.3-linux-x64/bin/node /opt/elasticbeanstalk/node-install/node-v6.14.3-linux-x64/bin/npm install
+
+        Before it got stuck on some parallel processing issue. Lets see if it succeeds today.
+
+        It got stuck again on following code:
+            extract:fb: sill gunzTarPerm extractEntry lib/scope/lib/renamer.js
+
+            Seems I need to do it with yarn and install it during app setup.
+
+    Attempt 3
+        Install yarn with .ebextensions yaml file.
+        Use the yarn to install node packages.
+
+        Installed yarn on windows and it works.
+
+        Manually install yarn:
+            curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+        Run yarn command on root
+
+        Tried to login again; 
+            eb ssh Helloworld02-env --region us-west-2
+        but stuck on :
+            INFO: Running ssh -i C:\Users\mayank1568\.ssh\aws-eb ec2-user@54.244.135.103
+
+        Tried with putty giving credentials ppk file:
+            It hangs, ideally it should ask for user.
+
+        Tried recreating the environment, may take several minutes.
+            Closed the hanged window.
+            Executed above two commands:
+                    eb ssh --setup Helloworld02-env --region us-west-2
+                    eb ssh Helloworld02-env --region us-west-2
+        Login successful
+
+        Node was not available to root for yarn installation 
+        sudo su
+        curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
+        sudo yum install -y nodejs
+        curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+        sudo yum install yarn
+
+        Now yarn works
+
+        Did a yarn on project root.
+
+        Node modules have data now.
+        
+        change owner of all modules recursively to nodejs
+        chown -R nodejs:nodejs node_modules
+        Verified all modules roles updated.
+        Restarting the app server.
+
+        Now complained about Cannot find module '../../../credentials.json'
+        Added file manually 
+        and did npm run build
+        /opt/elasticbeanstalk/node-install/node-v6.14.3-linux-x64/bin/node /opt/elasticbeanstalk/node-install/node-v6.14.3-linux-x64/bin/npm run build
+
+        successful
+        chown -R nodejs:nodejs .
+
+        server restart from console
+
+        App launched, Hurray
+
+        Database tables are gone.
+            Database connectivity not working
+            Created another database and could successfully connect through pgAdmin
+
+        Seems need to fix security groups or vpc.
+        5wordsdaily.live also givine 503 even though node is showing the app.
+
+            Added a security group and it started working. <troubleshooting/DBPublicAccessIssue.PNG>
+
+    Resolved
+        Hardcoded the database path for the restored database into deployed code on instance.
+        Installed yarn manually on the instance and installed node_modules with it. npm install was hanging all the time.
+
+
+Issue: Even though application working on node but not on domain
+    Check the loadbalance url. 5wordsdaily-1122278580.us-west-2.elb.amazonaws.com
+        Loadbalance giving : 503 Service Temporarily Unavailable
+    So this needs to be fixed.
+        Found that target groups were empty:
+            troubleshooting/targetGroupsNoEntry.png
+
+        Added them and application started working.
+            troubleshooting/targetGroupsModifiedAndApplicationWorking.PNG
+    
+    
+        database backup done: backup_22_aug_2018_db_postgres.bak
+        by default it goes to documents table
+        
+Issue:
+    Can't delete eb environment as backend databases are deleted manually.
+
+    Resolution:
+        
