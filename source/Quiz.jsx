@@ -15,7 +15,9 @@ const content = {
     textAlign             : "center"
 };
 
-
+const spacer = {
+  margin: "1em"
+}
 
 const Heading = (props) => {
   return (
@@ -25,32 +27,12 @@ const Heading = (props) => {
 
 }
 
-let wordClass = {
-  // margin: "2em",
-  // padding: "2em",
-};
-let tdRadio = {
-  textAlign: "right",
-  padding: "0em",
-  paddingRight: ".5em",
-  // marginTop: "1em" doesn't change anything
-};
-
-let tdClass = {
-  // This causes the allignment of text on the questions
-  maxWidth: "3em",
-  textAlign: "left",
-  padding: "0em",
-  paddingLeft: "35%"
-};
-
-
 export class Questions extends React.Component {
   state = {
     sessionId: this.props.sessionId,
     marked: true,
     submitClass: "",
-    openModal: false,
+    // openModal: false,
   }
 
   spinnerClass = "fa fa-cog fa-spin";
@@ -60,7 +42,7 @@ export class Questions extends React.Component {
     event.preventDefault();
     let self = this;
 
-    console.log(`Clicked ${event.target.name}`);
+    // console.log(`Clicked ${event.target.name}`);
     if (event.target.name === 'submitQuiz') {
       let words=[];
       let selectedChoice = "";
@@ -90,42 +72,44 @@ export class Questions extends React.Component {
               break;
             }
           }
-          console.log(`${this.refs[questionId].textContent}, is marked correct: ${this.props.questions[i].selected}`)
+          // console.log(`${this.refs[questionId].textContent}, is marked correct: ${this.props.questions[i].selected}`)
           let classVal = ""
           if(this.props.questions[i].selected){
             classVal = "fa fa-check";
           }else{
             classVal = "fa fa-close";
           }
-          
-          // 
-          // 
           words.push({word:this.props.questions[i].word, meaning: selectedChoice, class: classVal});
-          this.setState({words:words, openModal: true});
-          // console.log(words);
-          // this.state.words = words;
+      }
+      this.props.result(words);
 
+    } else if(event.target.name === 'newWords'){
+        this.props.newQuestions();
+      }else {
+        console.log(`No event for click on this target: ` + event.target.name);
       }
 
 
-      // instance.post('/api/submitQuiz', {
-      //   sessionId: this.props.sessionId,
-      //   result: { 23: "correct", 21: "incorrect", 24: "correct", 32: "incorrect", "43": "correct" }
-      // })
-      //   .then(function (response) {
-      //     console.log(response);
-      //     self.setState({ submitClass: "" })
+    //   // instance.post('/api/submitQuiz', {
+    //   //   sessionId: this.props.sessionId,
+    //   //   result: { 23: "correct", 21: "incorrect", 24: "correct", 32: "incorrect", "43": "correct" }
+    //   // })
+    //   //   .then(function (response) {
+    //   //     console.log(response);
+    //   //     self.setState({ submitClass: "" })
 
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error);
-      //   })
-      //   .finally(function () {
-      //     self.setState({ submitClass: "" });
-      //   });
-    } else {
-      console.log(`No event for click on this target: ` + event.target.name);
-    }
+    //   //   })
+    //   //   .catch(function (error) {
+    //   //     console.log(error);
+    //   //   })
+    //   //   .finally(function () {
+    //   //     self.setState({ submitClass: "" });
+    //   //   });
+    // } else if(event.target.name === 'newWords'){
+    //   this.props.newQuestions();
+    // }else {
+    //   console.log(`No event for click on this target: ` + event.target.name);
+    // }
   }
 
   shuffleArray = (array) => {
@@ -137,12 +121,9 @@ export class Questions extends React.Component {
     }
   }
 
-  closeModal = () => {
-    this.setState({ openModal: false });
-  }
-
-  getFormattedData = (questions) => {
-    console.log(JSON.stringify(questions));
+  getFormattedData = () => {
+    let questions = this.props.questions;
+    // console.log(`get form data: ${JSON.stringify(questions)}`);
     let content = [];
     for (let i = 0; i < questions.length; i++) {
       // for (let i = 0; i < 1; i++) {
@@ -150,8 +131,8 @@ export class Questions extends React.Component {
       let questionId = "word" + i;
       question.push(
         <tr key={questions[i].id}>
-          <th style={tdClass}>{i + 1}. <span ref={questionId}>{questions[i].word}</span></th>
-          {/* <th style={tdClass}><span ref={questionId}>{questions[i].word}</span></th> */}
+          <th >{i + 1}. <span ref={questionId}>{questions[i].word}</span></th>
+          {/* <th ><span ref={questionId}>{questions[i].word}</span></th> */}
         </tr>);
       let options = questions[i].optional_meanings.split(":");
       options.push(questions[i].meaning);
@@ -163,8 +144,8 @@ export class Questions extends React.Component {
         let optionId = "word" + i + "-" + j;
         question.push(
           <tr key={optionId} >
-            <td style={tdClass}><input type="radio" name={questions[i].word} ref={optionId} value={options[j]}/> {options[j]}</td>
-            {/* <td style={tdClass}><label for={optionId} >{options[j]}</label></td> */}
+            <td ><input type="radio" name={questions[i].word} ref={optionId} value={options[j]} /> {options[j]}</td>
+            {/* <td ><label for={optionId} >{options[j]}</label></td> */}
           </tr>
         );
       }
@@ -172,25 +153,40 @@ export class Questions extends React.Component {
       content.push(question);
     }
 
+    
+
     return (
+      <form>
       <div>
         <table className="table table-sm"><tbody >{content}</tbody></table>
+        
         <button className="btn btn-primary"
           name="submitQuiz"
           disabled={!(this.state.marked)}
-          onClick={this.handleClick}>Submit<i class={this.state.submitClass}></i></button>
+          onClick={this.handleClick}>Submit<i class={this.state.submitClass}></i></button> 
+        <button style={spacer} className="btn btn-success"
+          name="newWords"
+          // disabled={!(this.state.marked)}
+          onClick={this.handleClick}>Get New Words<i class={this.state.newWordsClass}></i></button>
         <br /><br />
-        <QuizModal words={this.state.words} open={this.state.openModal} closeModal={this.closeModal} sessionId={this.props.sessionId} />
+        
       </div>
+      </form>
     );
+  }
+
+  shouldComponentUpdate = (nextProps, nextState) => {
+    if (this.props.questions[0].word === nextProps.questions[0].word) {
+      return false;
+    }else{
+      return true;
+    }
   }
 
   render() {
     return (
       <div>
-        <form>
-          {this.getFormattedData(this.props.questions)}
-        </form>
+          {this.getFormattedData()}  
       </div>
     );
   }
@@ -198,10 +194,13 @@ export class Questions extends React.Component {
 
 export class Quiz extends React.Component {
   state = {
-    data: null
+    data: null,
+    words: null,
+    openModal: false,
   }
 
-  componentWillMount() {
+  getQuestions = () => {
+    // console.log("Get questions: ")
     let self = this;
     axios.get('/api/quiz', {
       params: {
@@ -209,7 +208,7 @@ export class Quiz extends React.Component {
       }
     })
       .then(function (response) {
-        console.log(response);
+        // console.log(`get questions reponse: ${JSON.stringify(response)}`);
         //   console.log(response.data.result);
         self.setState({ data: response.data.result.data });
         //   self.createTableRows();
@@ -219,6 +218,20 @@ export class Quiz extends React.Component {
       });
   }
 
+  closeModal = () => {
+    this.setState({ openModal: false });
+  }
+
+  componentWillMount() {
+    this.getQuestions();
+  }
+
+  result = (submittedData) => {
+    // console.log(`submittedData : ${submittedData}`);
+     this.setState({words:submittedData, openModal: true});
+    //  Post to server.
+  }
+
   render() {
     if (this.state.data) {
       return (
@@ -226,7 +239,8 @@ export class Quiz extends React.Component {
           <Heading />
           {/* <div>Content</div> */}
           <br />
-          <Questions sessionId={this.props.sessionId} questions={this.state.data} />
+          <Questions sessionId={this.props.sessionId} questions={this.state.data} newQuestions={this.getQuestions} result={this.result}/>
+          <QuizModal words={this.state.words} open={this.state.openModal} closeModal={this.closeModal} sessionId={this.props.sessionId} />
         </div>
       )
     } else {
@@ -234,6 +248,7 @@ export class Quiz extends React.Component {
         <div class="container">
           <Heading />
           <div>Fetching</div>
+          
         </div>
       )
     }
