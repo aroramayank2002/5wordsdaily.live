@@ -1,9 +1,21 @@
 import React from 'react';
 const axios = require('axios');
-// import { WordModal } from './WordModal.jsx';
+import {QuizModal} from './QuizModal.jsx'
 
 const instance = axios.create();
 instance.defaults.timeout = 4000;
+
+const content = {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    textAlign             : "center"
+};
+
+
 
 const Heading = (props) => {
   return (
@@ -29,6 +41,7 @@ let tdClass = {
   maxWidth: "3em",
   textAlign: "left",
   padding: "0em",
+  paddingLeft: "35%"
 };
 
 
@@ -36,36 +49,80 @@ export class Questions extends React.Component {
   state = {
     sessionId: this.props.sessionId,
     marked: true,
-    submitClass: ""
-    
+    submitClass: "",
+    openModal: false,
   }
 
   spinnerClass = "fa fa-cog fa-spin";
 
   handleClick = (event) => {
-    console.log("Sessin id: " + this.props.sessionId);
+    // console.log("Sessin id: " + this.props.sessionId);
     event.preventDefault();
     let self = this;
 
     console.log(`Clicked ${event.target.name}`);
     if (event.target.name === 'submitQuiz') {
-      console.log(`submitClass`);
-      self.setState({ submitClass: this.spinnerClass });
-      instance.post('/api/submitQuiz', {
-        sessionId: this.props.sessionId,
-        result: { 23: "correct", 21: "incorrect", 24: "correct", 32: "incorrect", "43": "correct" }
-      })
-        .then(function (response) {
-          console.log(response);
-          self.setState({submitClass: "" })
+      let words=[];
+      let selectedChoice = "";
+      // console.log(`submitClass`);
+      // self.setState({ submitClass: this.spinnerClass });
 
-        })
-        .catch(function (error) {
-          console.log(error);
-        })
-        .finally(function () {
-          self.setState({ submitClass: "" });
-        });
+      // Display choosen options:
+      for (let i = 0; i < this.props.questions.length; i++) {
+        
+        // for (let i = 0; i < 1; i++) {
+          let questionId = "word" + i;
+          // console.log(this.refs[questionId].textContent)
+          let options = this.props.questions[i].optional_meanings.split(":");
+          for (let j = 0; j < options.length+1; j++) { //Meaning is a different attribute.
+            let optionId = questionId + '-' + j;
+            // console.log(this.refs[optionId].value)
+            // console.log(this.refs[optionId].checked)
+            if(this.refs[optionId].checked){
+              // console.log(`Selected option: ${this.refs[optionId].value}`)
+              if(this.refs[optionId].value === this.props.questions[i].meaning){
+                this.props.questions[i].selected = true;
+                selectedChoice = this.refs[optionId].value
+              }else{
+                this.props.questions[i].selected = false;
+                selectedChoice = this.refs[optionId].value
+              }
+              break;
+            }
+          }
+          console.log(`${this.refs[questionId].textContent}, is marked correct: ${this.props.questions[i].selected}`)
+          let classVal = ""
+          if(this.props.questions[i].selected){
+            classVal = "fa fa-check";
+          }else{
+            classVal = "fa fa-close";
+          }
+          
+          // 
+          // 
+          words.push({word:this.props.questions[i].word, meaning: selectedChoice, class: classVal});
+          this.setState({words:words, openModal: true});
+          // console.log(words);
+          // this.state.words = words;
+
+      }
+
+
+      // instance.post('/api/submitQuiz', {
+      //   sessionId: this.props.sessionId,
+      //   result: { 23: "correct", 21: "incorrect", 24: "correct", 32: "incorrect", "43": "correct" }
+      // })
+      //   .then(function (response) {
+      //     console.log(response);
+      //     self.setState({ submitClass: "" })
+
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   })
+      //   .finally(function () {
+      //     self.setState({ submitClass: "" });
+      //   });
     } else {
       console.log(`No event for click on this target: ` + event.target.name);
     }
@@ -80,23 +137,34 @@ export class Questions extends React.Component {
     }
   }
 
+  closeModal = () => {
+    this.setState({ openModal: false });
+  }
+
   getFormattedData = (questions) => {
     console.log(JSON.stringify(questions));
     let content = [];
     for (let i = 0; i < questions.length; i++) {
+      // for (let i = 0; i < 1; i++) {
       let question = [];
-
-      question.push(<tr key={questions[i].id}><th style={tdRadio}>{i+1}. </th><th style={tdClass}><span>{questions[i].word}</span></th></tr>);
+      let questionId = "word" + i;
+      question.push(
+        <tr key={questions[i].id}>
+          <th style={tdClass}>{i + 1}. <span ref={questionId}>{questions[i].word}</span></th>
+          {/* <th style={tdClass}><span ref={questionId}>{questions[i].word}</span></th> */}
+        </tr>);
       let options = questions[i].optional_meanings.split(":");
       options.push(questions[i].meaning);
+      
+
       this.shuffleArray(options);
 
       for (let j = 0; j < options.length; j++) {
         let optionId = "word" + i + "-" + j;
         question.push(
           <tr key={optionId} >
-            <td style={tdRadio}><input type="radio" id={optionId} name={questions[i].word} /></td>
-            <td style={tdClass}><label for={optionId}>{options[j]}</label></td>
+            <td style={tdClass}><input type="radio" name={questions[i].word} ref={optionId} value={options[j]}/> {options[j]}</td>
+            {/* <td style={tdClass}><label for={optionId} >{options[j]}</label></td> */}
           </tr>
         );
       }
@@ -106,12 +174,13 @@ export class Questions extends React.Component {
 
     return (
       <div>
-        <table className="table table-sm"><tbody>{content}</tbody></table>
+        <table className="table table-sm"><tbody >{content}</tbody></table>
         <button className="btn btn-primary"
-                        name="submitQuiz"
-                        disabled={!(this.state.marked)}
-                        onClick={this.handleClick}>Submit<i class={this.state.submitClass}></i></button>
-        <br/><br/>
+          name="submitQuiz"
+          disabled={!(this.state.marked)}
+          onClick={this.handleClick}>Submit<i class={this.state.submitClass}></i></button>
+        <br /><br />
+        <QuizModal words={this.state.words} open={this.state.openModal} closeModal={this.closeModal} sessionId={this.props.sessionId} />
       </div>
     );
   }
@@ -156,7 +225,7 @@ export class Quiz extends React.Component {
         <div class="container">
           <Heading />
           {/* <div>Content</div> */}
-          <br/>
+          <br />
           <Questions sessionId={this.props.sessionId} questions={this.state.data} />
         </div>
       )
