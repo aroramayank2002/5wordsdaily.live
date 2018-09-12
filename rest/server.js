@@ -175,8 +175,8 @@ router.route('/user/:email')
 
     router.route('/submitQuiz/')
         .post(function(req, res) {
-            console.log(`quiz req param: sessionId:  ${req.body.sessionId},  ${req.body.result}`);
-            tranService.updateQuiz({sessionId: req.query.sessionId, result: req.body.result}).then((result)=>{
+            console.log(`submitQuiz req param: sessionId:  ${req.body.sessionId},  ${JSON.stringify(req.body.result)}`);
+            tranService.updateQuiz({sessionId: req.body.sessionId, result: req.body.result}).then((result)=>{
                 console.log(`Result: ${JSON.stringify(result)}`);
                 res.json({"result":result});
             });
@@ -201,6 +201,14 @@ router.route('/user/:email')
             });
     });
     
+    router.route('/ping/')
+        .get(function(req, res) {
+            console.log(`ping req`);
+            dbService.ping().then((result)=>{
+                res.json(result);
+            });
+    });
+
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);

@@ -1,18 +1,18 @@
 import React from 'react';
 const axios = require('axios');
-import {QuizModal} from './QuizModal.jsx'
+import { QuizModal } from './QuizModal.jsx'
 
 const instance = axios.create();
 instance.defaults.timeout = 4000;
 
 const content = {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    textAlign             : "center"
+  top: '50%',
+  left: '50%',
+  right: 'auto',
+  bottom: 'auto',
+  marginRight: '-50%',
+  transform: 'translate(-50%, -50%)',
+  textAlign: "center"
 };
 
 const spacer = {
@@ -37,79 +37,85 @@ export class Questions extends React.Component {
 
   spinnerClass = "fa fa-cog fa-spin";
 
+  submitResults(results) {
+    console.log(`results:  ${JSON.stringify(results)}`);
+    
+    let self = this;
+    self.setState({ submitClass: this.spinnerClass });
+      instance.post('/api/submitQuiz', {
+        sessionId: this.props.sessionId,
+        result: results
+      })
+        .then(function (response) {
+          console.log(response);
+          self.setState({ submitClass: "" })
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+        .finally(function () {
+          self.setState({ submitClass: "" });
+        });
+  }
+
   handleClick = (event) => {
     // console.log("Sessin id: " + this.props.sessionId);
     event.preventDefault();
-    let self = this;
+    // let self = this;
 
     // console.log(`Clicked ${event.target.name}`);
     if (event.target.name === 'submitQuiz') {
-      let words=[];
+      let words = [];
+      let results = [];
       let selectedChoice = "";
       // console.log(`submitClass`);
       // self.setState({ submitClass: this.spinnerClass });
 
       // Display choosen options:
       for (let i = 0; i < this.props.questions.length; i++) {
-        
+
         // for (let i = 0; i < 1; i++) {
-          let questionId = "word" + i;
-          // console.log(this.refs[questionId].textContent)
-          let options = this.props.questions[i].optional_meanings.split(":");
-          for (let j = 0; j < options.length+1; j++) { //Meaning is a different attribute.
-            let optionId = questionId + '-' + j;
-            // console.log(this.refs[optionId].value)
-            // console.log(this.refs[optionId].checked)
-            if(this.refs[optionId].checked){
-              // console.log(`Selected option: ${this.refs[optionId].value}`)
-              if(this.refs[optionId].value === this.props.questions[i].meaning){
-                this.props.questions[i].selected = true;
-                selectedChoice = this.refs[optionId].value
-              }else{
-                this.props.questions[i].selected = false;
-                selectedChoice = this.refs[optionId].value
-              }
-              break;
+        let questionId = "word" + i;
+        // console.log(this.refs[questionId].textContent)
+        let options = this.props.questions[i].optional_meanings.split(":");
+        for (let j = 0; j < options.length + 1; j++) { //Meaning is a different attribute.
+          let optionId = questionId + '-' + j;
+          // console.log(this.refs[optionId].value)
+          // console.log(this.refs[optionId].checked)
+          if (this.refs[optionId].checked) {
+            // console.log(`Selected option: ${this.refs[optionId].value}`)
+            if (this.refs[optionId].value === this.props.questions[i].meaning) {
+              this.props.questions[i].selected = true;
+              selectedChoice = this.refs[optionId].value
+            } else {
+              this.props.questions[i].selected = false;
+              selectedChoice = this.refs[optionId].value
             }
+            break;
           }
-          // console.log(`${this.refs[questionId].textContent}, is marked correct: ${this.props.questions[i].selected}`)
-          let classVal = ""
-          if(this.props.questions[i].selected){
-            classVal = "fa fa-check";
-          }else{
-            classVal = "fa fa-close";
-          }
-          words.push({word:this.props.questions[i].word, meaning: selectedChoice, class: classVal});
+        }
+        // console.log(`${this.refs[questionId].textContent}, is marked correct: ${this.props.questions[i].selected}`)
+        let classVal = ""
+        if (this.props.questions[i].selected) {
+          classVal = "fa fa-check";
+        } else {
+          classVal = "fa fa-close";
+        }
+        words.push({ word: this.props.questions[i].word, meaning: selectedChoice, class: classVal });
+        let correct = (this.props.questions[i].selected) ? 1 : 0;
+        let wordId = this.props.questions[i].id;
+        console.log(`wordId: ${wordId}, correct: ${correct}`);
+        results.push({ wordId: this.props.questions[i].id, isCorrect: correct });
       }
       this.props.result(words);
+      this.submitResults(results);
 
-    } else if(event.target.name === 'newWords'){
-        this.props.newQuestions();
-      }else {
-        console.log(`No event for click on this target: ` + event.target.name);
-      }
-
-
-    //   // instance.post('/api/submitQuiz', {
-    //   //   sessionId: this.props.sessionId,
-    //   //   result: { 23: "correct", 21: "incorrect", 24: "correct", 32: "incorrect", "43": "correct" }
-    //   // })
-    //   //   .then(function (response) {
-    //   //     console.log(response);
-    //   //     self.setState({ submitClass: "" })
-
-    //   //   })
-    //   //   .catch(function (error) {
-    //   //     console.log(error);
-    //   //   })
-    //   //   .finally(function () {
-    //   //     self.setState({ submitClass: "" });
-    //   //   });
-    // } else if(event.target.name === 'newWords'){
-    //   this.props.newQuestions();
-    // }else {
-    //   console.log(`No event for click on this target: ` + event.target.name);
-    // }
+    } else if (event.target.name === 'newWords') {
+      this.props.newQuestions();
+    } else {
+      console.log(`No event for click on this target: ` + event.target.name);
+    }
   }
 
   shuffleArray = (array) => {
@@ -136,7 +142,7 @@ export class Questions extends React.Component {
         </tr>);
       let options = questions[i].optional_meanings.split(":");
       options.push(questions[i].meaning);
-      
+
 
       this.shuffleArray(options);
 
@@ -153,24 +159,24 @@ export class Questions extends React.Component {
       content.push(question);
     }
 
-    
+
 
     return (
       <form>
-      <div>
-        <table className="table table-sm"><tbody >{content}</tbody></table>
-        
-        <button className="btn btn-primary"
-          name="submitQuiz"
-          disabled={!(this.state.marked)}
-          onClick={this.handleClick}>Submit<i class={this.state.submitClass}></i></button> 
-        <button style={spacer} className="btn btn-success"
-          name="newWords"
-          // disabled={!(this.state.marked)}
-          onClick={this.handleClick}>Get New Words<i class={this.state.newWordsClass}></i></button>
-        <br /><br />
-        
-      </div>
+        <div>
+          <table className="table table-sm"><tbody >{content}</tbody></table>
+
+          <button className="btn btn-primary"
+            name="submitQuiz"
+            disabled={!(this.state.marked)}
+            onClick={this.handleClick}>Submit<i class={this.state.submitClass}></i></button>
+          <button style={spacer} className="btn btn-success"
+            name="newWords"
+            // disabled={!(this.state.marked)}
+            onClick={this.handleClick}>Get New Words<i class={this.state.newWordsClass}></i></button>
+          <br /><br />
+
+        </div>
       </form>
     );
   }
@@ -178,7 +184,7 @@ export class Questions extends React.Component {
   shouldComponentUpdate = (nextProps, nextState) => {
     if (this.props.questions[0].word === nextProps.questions[0].word) {
       return false;
-    }else{
+    } else {
       return true;
     }
   }
@@ -186,7 +192,7 @@ export class Questions extends React.Component {
   render() {
     return (
       <div>
-          {this.getFormattedData()}  
+        {this.getFormattedData()}
       </div>
     );
   }
@@ -228,7 +234,7 @@ export class Quiz extends React.Component {
 
   result = (submittedData) => {
     // console.log(`submittedData : ${submittedData}`);
-     this.setState({words:submittedData, openModal: true});
+    this.setState({ words: submittedData, openModal: true });
     //  Post to server.
   }
 
@@ -239,7 +245,7 @@ export class Quiz extends React.Component {
           <Heading />
           {/* <div>Content</div> */}
           <br />
-          <Questions sessionId={this.props.sessionId} questions={this.state.data} newQuestions={this.getQuestions} result={this.result}/>
+          <Questions sessionId={this.props.sessionId} questions={this.state.data} newQuestions={this.getQuestions} result={this.result} />
           <QuizModal words={this.state.words} open={this.state.openModal} closeModal={this.closeModal} sessionId={this.props.sessionId} />
         </div>
       )
@@ -248,7 +254,7 @@ export class Quiz extends React.Component {
         <div class="container">
           <Heading />
           <div>Fetching</div>
-          
+
         </div>
       )
     }

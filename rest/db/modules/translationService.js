@@ -163,7 +163,7 @@ function getSuggestion(reqObject){
 
 function updateQuiz(reqObject){
     return new Promise((resolve, reject) =>{
-        console.log(`updateQuiz ${reqObject.sessionId} ${reqObject.result}`)
+        console.log(`updateQuiz ${reqObject.sessionId} ${JSON.stringify(reqObject.result)}`)
         resolve({"msg":"saved"});
         // translation.getUserId(reqObject.sessionId)
         // .then((result) =>{

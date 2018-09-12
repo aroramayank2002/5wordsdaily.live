@@ -5,3 +5,4 @@
 !.elasticbeanstalk/*.global.yml
 credentials.json
 node_modules/*
+ignoreForGit/*
