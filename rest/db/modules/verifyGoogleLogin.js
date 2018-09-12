@@ -1,5 +1,5 @@
 const { OAuth2Client } = require('google-auth-library');
-let credentials = require('../../../credentials.json');
+let credentials = require('../../../ignoreForGit/credentials.json');
 const client = new OAuth2Client(credentials.web.client_id);
 
 function verify(token) {

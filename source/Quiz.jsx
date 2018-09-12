@@ -47,7 +47,8 @@ export class Questions extends React.Component {
         result: results
       })
         .then(function (response) {
-          console.log(response);
+          // console.log(`Submit quiz response: ${JSON.stringify(response)}`);
+          console.log(`Submit quiz response: ${JSON.stringify(response.data.result)}`);
           self.setState({ submitClass: "" })
 
         })
@@ -105,7 +106,7 @@ export class Questions extends React.Component {
         words.push({ word: this.props.questions[i].word, meaning: selectedChoice, class: classVal });
         let correct = (this.props.questions[i].selected) ? 1 : 0;
         let wordId = this.props.questions[i].id;
-        console.log(`wordId: ${wordId}, correct: ${correct}`);
+        // console.log(`wordId: ${wordId}, correct: ${correct}`);
         results.push({ wordId: this.props.questions[i].id, isCorrect: correct });
       }
       this.props.result(words);
