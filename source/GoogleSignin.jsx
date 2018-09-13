@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import { GoogleLogin } from 'react-google-login';
-let credentials = require('../ignoreForGit/credentials.json'); 
+let credentials = require('../credentials.json'); 
 
 const failureGoogle = (response) => {
   console.log("failureGoogle: response: "+ JSON.stringify(response)); 
