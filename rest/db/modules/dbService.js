@@ -2,26 +2,18 @@ const pg = require('pg');
 const { Client, Query } = require('pg')
 pg.defaults.poolSize = 25;
 var connectionString_local = {
-    user: 'postgres',
-    host: 'localhost',
-    database: 'postgres',
-    password: 'admin',
-    port: 5432,
-};
-
-var connectionString_aws = {
-    user: 'adminadmin',
-    // host: 'postgreinstance.cjwh4o87vc70.us-west-2.rds.amazonaws.com',
-    host: '54.244.135.205',
-    database: 'postgres',
+    user: 'mayank',
+    host: 'aa1ui9rji3ntlmw.cjwh4o87vc70.us-west-2.rds.amazonaws.com',
+    database: 'ebdb',
     password: '12345678',
     port: 5432,
 };
 
+
 var connectionString_aws2 = {
     user: process.env.RDS_USERNAME || 'postgres',
     host: process.env.RDS_HOSTNAME || 'localhost',
-    database: 'postgres',
+    database: process.env.RDS_DB_NAME || 'postgres',
     password: process.env.RDS_PASSWORD || 'admin',
     port: process.env.RDS_PORT || 5432,
 };
@@ -29,6 +21,7 @@ var connectionString_aws2 = {
 let conn = connectionString_local;
 if (process.env.RDS_USERNAME) {
     conn = connectionString_aws2;
+    console.log(`${conn.user}, ${conn.host}, ${conn.database}, ${conn.password}`)
 }
 
 var client = new pg.Client(conn);
@@ -67,7 +60,6 @@ function executeQueryPromise(queryStr) {
             function (err, client, done) {
                 // console.log(`client: ${client}`)
                 const query = client.query(new pg.Query(queryStr))
-
                 query.on('row', (row) => {
                     console.log(`row: ${JSON.stringify(row)}`);
                     // resolve(row);
@@ -105,7 +97,7 @@ function getUserId(email) {
 
 function ping() {
     return new Promise((resolve, reject) => {
-        queryStr = "select 1 as status";
+        queryStr = "select count(id) as status from public.user";
         executeQueryPromise(queryStr).then((res) => {
             console.log(`Promis res ${JSON.stringify(res.rowData[0])}`);
             resolve(res.rowData[0]); //{"status":1}

@@ -83,8 +83,8 @@ var divStyle = {
 
 export class Main extends React.Component {
   state = {
-    sessionId: '3fn1xxjj-2018-09-12T08:31:18.266Z',
-    // sessionId: null,
+    // sessionId: '3fn1xxjj-2018-09-12T08:31:18.266Z',
+    sessionId: null,
     page: "login",
   }
 
