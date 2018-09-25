@@ -160,14 +160,10 @@ export class Questions extends React.Component {
       content.push(question);
     }
 
-
-
-    return (
-      <form>
+    if(this.props.questions.length>0){
+      content.push(
         <div>
-          <table className="table table-sm"><tbody >{content}</tbody></table>
-
-          <button className="btn btn-primary"
+        <button className="btn btn-primary"
             name="submitQuiz"
             disabled={!(this.state.marked)}
             onClick={this.handleClick}>Submit<i class={this.state.submitClass}></i></button>
@@ -176,6 +172,26 @@ export class Questions extends React.Component {
             // disabled={!(this.state.marked)}
             onClick={this.handleClick}>Get New Words<i class={this.state.newWordsClass}></i></button>
           <br /><br />
+          </div>
+      );
+    }else{
+      content.push(
+        <div>
+          You don't have any saved words.<br />
+          To see quiz you should have few saved words.<br />
+          Please add few using "Add word" <i class="fa fa-plus-square"></i> feature.
+        </div>
+      );
+    }
+
+
+    return (
+      <form>
+        <div>
+          <table className="table table-sm"><tbody >{content}</tbody></table>
+
+          
+          
 
         </div>
       </form>

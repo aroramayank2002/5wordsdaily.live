@@ -212,9 +212,9 @@ export class Main extends React.Component {
             </div>
               <Header currentPage={this.page}/> 
               <div style={divStyle}>
-              <Quiz sessionId={this.state.sessionId} />
+              {/* <Quiz sessionId={this.state.sessionId} /> */}
               {/* <Calanader sessionId={this.state.sessionId}/> */}
-              {/* <WordForm sessionId={this.state.sessionId}/>  */}
+              <WordForm sessionId={this.state.sessionId}/> 
               {/* <Home sessionId={this.state.sessionId} navigateTo={this.navigateTo}/>   */}
               
               </div>

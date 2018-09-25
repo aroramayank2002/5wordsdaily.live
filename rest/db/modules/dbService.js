@@ -3,7 +3,7 @@ const { Client, Query } = require('pg')
 pg.defaults.poolSize = 25;
 var connectionString_local = {
     user: 'mayank',
-    host: 'aa1ui9rji3ntlmw.cjwh4o87vc70.us-west-2.rds.amazonaws.com',
+    host: 'aan5srvu48sd9s.cjwh4o87vc70.us-west-2.rds.amazonaws.com',
     database: 'ebdb',
     password: '12345678',
     port: 5432,
