@@ -39,25 +39,25 @@ export class Questions extends React.Component {
 
   submitResults(results) {
     console.log(`results:  ${JSON.stringify(results)}`);
-    
+
     let self = this;
     self.setState({ submitClass: this.spinnerClass });
-      instance.post('/api/submitQuiz', {
-        sessionId: this.props.sessionId,
-        result: results
-      })
-        .then(function (response) {
-          // console.log(`Submit quiz response: ${JSON.stringify(response)}`);
-          console.log(`Submit quiz response: ${JSON.stringify(response.data.result)}`);
-          self.setState({ submitClass: "" })
+    instance.post('/api/submitQuiz', {
+      sessionId: this.props.sessionId,
+      result: results
+    })
+      .then(function (response) {
+        // console.log(`Submit quiz response: ${JSON.stringify(response)}`);
+        console.log(`Submit quiz response: ${JSON.stringify(response.data.result)}`);
+        self.setState({ submitClass: "" })
 
-        })
-        .catch(function (error) {
-          console.log(error);
-        })
-        .finally(function () {
-          self.setState({ submitClass: "" });
-        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
+        self.setState({ submitClass: "" });
+      });
   }
 
   handleClick = (event) => {
@@ -130,40 +130,41 @@ export class Questions extends React.Component {
 
   getFormattedData = () => {
     let questions = this.props.questions;
-    // console.log(`get form data: ${JSON.stringify(questions)}`);
     let content = [];
-    for (let i = 0; i < questions.length; i++) {
-      // for (let i = 0; i < 1; i++) {
-      let question = [];
-      let questionId = "word" + i;
-      question.push(
-        <tr key={questions[i].id}>
-          <th >{i + 1}. <span ref={questionId}>{questions[i].word}</span></th>
-          {/* <th ><span ref={questionId}>{questions[i].word}</span></th> */}
-        </tr>);
-      let options = questions[i].optional_meanings.split(":");
-      options.push(questions[i].meaning);
+    if (questions && questions.length > 4) {
+      // console.log(`get form data: ${JSON.stringify(questions)}`);
 
-
-      this.shuffleArray(options);
-
-      for (let j = 0; j < options.length; j++) {
-        let optionId = "word" + i + "-" + j;
+      for (let i = 0; i < questions.length; i++) {
+        // for (let i = 0; i < 1; i++) {
+        let question = [];
+        let questionId = "word" + i;
         question.push(
-          <tr key={optionId} >
-            <td ><input type="radio" name={questions[i].word} ref={optionId} value={options[j]} /> {options[j]}</td>
-            {/* <td ><label for={optionId} >{options[j]}</label></td> */}
-          </tr>
-        );
+          <tr key={questions[i].id}>
+            <th >{i + 1}. <span ref={questionId}>{questions[i].word}</span></th>
+            {/* <th ><span ref={questionId}>{questions[i].word}</span></th> */}
+          </tr>);
+        let options = questions[i].optional_meanings.split(":");
+        options.push(questions[i].meaning);
+
+
+        this.shuffleArray(options);
+
+        for (let j = 0; j < options.length; j++) {
+          let optionId = "word" + i + "-" + j;
+          question.push(
+            <tr key={optionId} >
+              <td ><input type="radio" name={questions[i].word} ref={optionId} value={options[j]} /> {options[j]}</td>
+              {/* <td ><label for={optionId} >{options[j]}</label></td> */}
+            </tr>
+          );
+        }
+
+        content.push(question);
       }
 
-      content.push(question);
-    }
-
-    if(this.props.questions.length>0){
       content.push(
         <div>
-        <button className="btn btn-primary"
+          <button className="btn btn-primary"
             name="submitQuiz"
             disabled={!(this.state.marked)}
             onClick={this.handleClick}>Submit<i class={this.state.submitClass}></i></button>
@@ -172,15 +173,19 @@ export class Questions extends React.Component {
             // disabled={!(this.state.marked)}
             onClick={this.handleClick}>Get New Words<i class={this.state.newWordsClass}></i></button>
           <br /><br />
-          </div>
-      );
-    }else{
-      content.push(
-        <div>
-          You don't have any saved words.<br />
-          To see quiz you should have few saved words.<br />
-          Please add few using "Add word" <i class="fa fa-plus-square"></i> feature.
         </div>
+      );
+    } else {
+      content.push(
+        <tr key="1" >
+          <td >
+            <div>
+              To see quiz you should have atleast 5 saved words.<br />
+              You currently have {(questions)? questions.length : "None"}. <br />
+              Please add few using "Add word" <i class="fa fa-plus-square"></i> feature.
+            </div>
+          </td>
+        </tr>
       );
     }
 
@@ -190,8 +195,8 @@ export class Questions extends React.Component {
         <div>
           <table className="table table-sm"><tbody >{content}</tbody></table>
 
-          
-          
+
+
 
         </div>
       </form>
