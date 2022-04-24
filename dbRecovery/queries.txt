@@ -19,4 +19,16 @@ Common queries:
 -- To create users
 --INSERT INTO public.user (email, name, session_id, password) VALUES ('aas', 'aas', '', 'aas');
 
-------- Create schema scripts ----
+-------swedish english dictionary ----
+http://folkets-lexikon.csc.kth.se/folkets/folkets_sv_en_public.xml
+curl -o folkets_sv_en_public.xml http://folkets-lexikon.csc.kth.se/folkets/folkets_sv_en_public.xml
+node dbRecovery/xmlParse.js
+
+--select * from public.dictionary limit 2;
+--INSERT INTO public.dictionary(word, meaning) VALUES ('bärighet', 'bearing (carrying) capacity,the ability to support a load')
+--delete from public.dictionary;
+--select count(*) from public.dictionary;
+
+
+
+

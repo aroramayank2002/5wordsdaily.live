@@ -28,6 +28,7 @@
     "json-loader": "^0.5.7",
     "mongoose": "^5.13.14",
     "node-calendar": "^0.1.5",
+    "node-xml-stream": "^1.0.2",
     "pg": "^8.7.3",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",

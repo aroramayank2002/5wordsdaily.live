@@ -10,6 +10,7 @@ const credentials = {
   database: "postgres",
   password: "0000",
   port: 5432,
+  max: 60
 };
 const pool = new Pool(credentials);
 let queryStr = "SELECT NOW();"
@@ -129,7 +130,7 @@ async function poolDemo() {
 }
 
 function executeQueryPromise(queryStr) {
-    console.log(`Executing promis query version 1: ${queryStr}`);
+    //console.log(`Executing promis query version 1: ${queryStr}`);
     // console.log(`Executing promis query version 1: ${queryStr}`);
 
     var rowData = [];

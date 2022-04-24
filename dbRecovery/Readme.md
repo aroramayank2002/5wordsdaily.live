@@ -1,17 +1,5 @@
 http://localhost:3000/
+http://192.168.1.132:9001/
+http://5wordsdaily.fun/
+http://83.226.131.98:9001/
 
-SELECT public."getRandomMeanings"(1, 1)
-
-CREATE FUNCTION getRandomMeanings(userId int, meaningId int)
-RETURNS text
-LANGUAGE 'plpgsql'
-as
-$$
-Declare
-optional_meanings text;
-Begin
-SELECT string_agg(meaning::text, ',') into optional_meanings
-FROM public.meaning where user_id=userId and id != meaningId limit 5 ;
-return optional_meanings;
-End;
-$$
