@@ -1,0 +1,22 @@
+Common queries:
+--SELECT public."getRandomMeanings"(1, 1)
+--SELECT count(name) FROM public.user WHERE name='m' AND password='p';
+--SELECT count(user) FROM public.user WHERE name='a' AND password='h'
+--SELECT * FROM public.user;
+--SELECT * FROM public.login WHERE email='m';
+--SELECT * FROM public.login WHERE email='m' order by login_at desc limit 1
+--DELETE FROM public.login WHERE email='m'
+--SELECT count(*) FROM public.login WHERE email='m'
+--DELETE FROM public.user WHERE email='undefined'
+--DELETE FROM public.user WHERE id=10
+
+--select id from public.login where sessionId='00f4f472-f36b-40a1-8161-0072af98532c'
+--select * from public.login WHERE "sessionId"='00f4f472-f36b-40a1-8161-0072af98532c';
+--select u.id from public.login l, public.user u where l."sessionId"='00f4f472-f36b-40a1-8161-0072af98532c' AND l.email=u.email
+--select * from meaning where user_id=23;
+--select id,word from public.meaning WHERE user_id = (select u.id as id from public.login l, public.user u where l."sessionId"='00f4f472-f36b-40a1-8161-0072af98532c' AND l.email=u.email)
+--select u.id from public.login l, public.user u where l."sessionId"='00f4f472-f36b-40a1-8161-0072af98532c' AND l.email=u.email
+-- To create users
+--INSERT INTO public.user (email, name, session_id, password) VALUES ('aas', 'aas', '', 'aas');
+
+------- Create schema scripts ----

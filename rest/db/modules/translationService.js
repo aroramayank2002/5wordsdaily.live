@@ -7,7 +7,8 @@ const calendar = require('node-calendar');
 function getUserId(sessionId) {
     return new Promise((resolve, reject) => {
         // console.log(`getUserId ${sessionId}`)
-        queryStr = "select id from public.user where session_id='" + sessionId + "'";
+        queryStr = `select u.id from public.login l, public.user u where l."sessionId"='${sessionId}' AND l.email=u.email`;
+        console.log(`getUserId query ${queryStr}`);
         db.executeQueryPromise(queryStr).then((res) => {
             console.log(`Promis res ${JSON.stringify(res)}`);
             resolve(res.rowData[0].id);
@@ -41,7 +42,9 @@ function saveWord(userObject) {
 function getWords(reqObject) {
     return new Promise((resolve, reject) => {
         console.log(`saveWord ${reqObject.sessionId}`)
-        db.executeQueryPromise(`select id,word from public.meaning where user_id=(select id from public.user where session_id='${reqObject.sessionId}') order by id desc`)
+
+        db.executeQueryPromise(`select m.id,m.word from public.meaning m WHERE m.user_id=(select u.id as id from public.login l,
+                                    public.user u where l."sessionId"='${reqObject.sessionId}' AND l.email=u.email)`)
             .then((res) => {
                 console.log(`getWords Promis res ${JSON.stringify(res)}`);
                 resolve({ "msg": "fetched", "words": res.rowData });
@@ -112,7 +115,8 @@ function getQuiz(reqObject) {
         console.log(`getQuiz ${reqObject.sessionId}`)
         translation.getUserId(reqObject.sessionId)
             .then((result) => {
-                return db.executeQueryPromise(`select id, word,meaning,getRandomMeanings('${result.id}',id) as optional_meanings from public.meaning as words where user_id='${result.id}' ORDER BY random() limit 5 ;`);
+                return db.executeQueryPromise(`select id, word,meaning,getRandomMeanings('${result.id}',id) as
+                optional_meanings from public.meaning as words where user_id='${result.id}' ORDER BY random() limit 5 ;`);
             })
             .then((res) => {
                 console.log(`Promis res getQuiz ${JSON.stringify(res.rowData)}`);

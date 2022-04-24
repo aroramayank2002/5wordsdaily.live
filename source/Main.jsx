@@ -1,6 +1,6 @@
 import React from 'react';
 import { GoogleSignin } from './GoogleSignin.jsx';
-import { FacebookSignin } from './FacebookSignin.jsx';
+import { Login } from './Login.jsx';
 // import { FacebookSignin } from './Facebook.jsx';
 const axios = require('axios');
 import {WordForm} from './WordForm.jsx';
@@ -92,14 +92,15 @@ export class Main extends React.Component {
     //  console.log(`pageValue ${pageValue}`);
      this.setState({page:pageValue});
    }
-  
+
   loginSuccess = (userObject) => {
-    // console.log(`userObj : ${JSON.stringify(userObject)}`)
+    console.log(`userObj : ${JSON.stringify(userObject)}`)
     var self = this;
     axios.post('/api/login', {
       email: userObject.email,
       name: userObject.name,
       token: userObject.token,
+      password:userObject.password,
       src: userObject.src
     })
     .then(function (response) {
@@ -115,7 +116,7 @@ export class Main extends React.Component {
     .catch(function (error) {
       console.log(error);
     });
-    
+
    }
 
    navigateTo = (id) => {
@@ -130,9 +131,9 @@ export class Main extends React.Component {
           <div>
             <div className="app-wrapper">
           </div>
-            <Header currentPage={this.page}/> 
+            <Header currentPage={this.page}/>
             <div style={divStyle}>
-            <Home sessionId={this.state.sessionId} navigateTo={this.navigateTo}/>  
+            <Home sessionId={this.state.sessionId} navigateTo={this.navigateTo}/>
             {/* <Calanader /> */}
             </div>
           </div>
@@ -142,9 +143,9 @@ export class Main extends React.Component {
           <div>
             <div className="app-wrapper">
           </div>
-            <Header currentPage={this.page}/> 
+            <Header currentPage={this.page}/>
             <div style={divStyle}>
-            <WordForm sessionId={this.state.sessionId}/>  
+            <WordForm sessionId={this.state.sessionId}/>
             {/* <Calanader /> */}
             </div>
           </div>
@@ -154,9 +155,9 @@ export class Main extends React.Component {
           <div>
             <div className="app-wrapper">
           </div>
-            <Header currentPage={this.page}/> 
+            <Header currentPage={this.page}/>
             <div style={divStyle}>
-            <WordForm sessionId={this.state.sessionId}/>  
+            <WordForm sessionId={this.state.sessionId}/>
             {/* <Calanader /> */}
             </div>
           </div>
@@ -166,7 +167,7 @@ export class Main extends React.Component {
           <div>
             <div className="app-wrapper">
           </div>
-            <Header currentPage={this.page}/> 
+            <Header currentPage={this.page}/>
             <div style={divStyle}>
             <Calanader sessionId={this.state.sessionId} />
             </div>
@@ -177,7 +178,7 @@ export class Main extends React.Component {
           <div>
             <div className="app-wrapper">
           </div>
-            <Header currentPage={this.page}/> 
+            <Header currentPage={this.page}/>
             <div style={divStyle}>
             <List sessionId={this.state.sessionId}/>
             </div>
@@ -188,7 +189,7 @@ export class Main extends React.Component {
           <div>
             <div className="app-wrapper">
           </div>
-            <Header currentPage={this.page}/> 
+            <Header currentPage={this.page}/>
             <div style={divStyle}>
             <About />
             </div>
@@ -199,7 +200,7 @@ export class Main extends React.Component {
           <div>
             <div className="app-wrapper">
           </div>
-            <Header currentPage={this.page}/> 
+            <Header currentPage={this.page}/>
             <div style={divStyle}>
             <Quiz sessionId={this.state.sessionId} />
             </div>
@@ -210,13 +211,13 @@ export class Main extends React.Component {
             <div>
               <div className="app-wrapper">
             </div>
-              <Header currentPage={this.page}/> 
+              <Header currentPage={this.page}/>
               <div style={divStyle}>
               {/* <Quiz sessionId={this.state.sessionId} /> */}
               {/* <Calanader sessionId={this.state.sessionId}/> */}
-              <WordForm sessionId={this.state.sessionId}/> 
+              <WordForm sessionId={this.state.sessionId}/>
               {/* <Home sessionId={this.state.sessionId} navigateTo={this.navigateTo}/>   */}
-              
+
               </div>
             </div>
           );
@@ -237,14 +238,19 @@ export class Main extends React.Component {
 
             </nav>
             <hr style={hrStyle} />
-          </div> 
+          </div>
           <div style={divStyle}>
-            <GoogleSignin loginSuccess={this.loginSuccess}/>
-          <br />
-            <FacebookSignin loginSuccess={this.loginSuccess}/>
+            <Login loginSuccess={this.loginSuccess}/>
+            <br />
+            <br />
+
+
+
+
           </div>
         </div>
       );
+      //<GoogleSignin loginSuccess={this.loginSuccess}/>
     }
   }
 }
