@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1120.0",
-    "axios": "^0.26.1",
+    "axios": "^0.27.2",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-plugin-react-html-attrs": "^2.1.0",
