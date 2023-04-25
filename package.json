@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.1120.0",
+    "aws-sdk": "^2.1354.0",
     "axios": "^0.26.1",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
