@@ -24,7 +24,7 @@
     "body-parser": "^1.20.0",
     "express": "^4.17.3",
     "fb": "^2.0.0",
-    "google-auth-library": "^8.0.1",
+    "google-auth-library": "^9.0.0",
     "json-loader": "^0.5.7",
     "mongoose": "^5.13.14",
     "node-calendar": "^0.1.5",
